@@ -8,8 +8,8 @@ int main(int argc , char* argv[])
 {
     if (argc < 13)
     {
-        printf("Error 01: Expected more argument(s) , %d given.\n", argc);
-        return -1;
+        perror("Error 01: Expected more argument(s).\n");
+        exit(-1);
     }
 
     int id ;
@@ -91,8 +91,8 @@ int main(int argc , char* argv[])
             log_file = (char *)malloc(strlen((argv[i + 1]) + 1) * sizeof(char));
             if (log_file == NULL)
             {
-                printf("Error in malloc at mirror_client.c\n");
-                return -3;
+                perror("Error in malloc at mirror_client.c\n");
+                exit(-3);
             }
 
             strcpy(log_file, argv[i + 1]);
