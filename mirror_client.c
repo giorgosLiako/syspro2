@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
             return -10;
         }
     }
-    
+
     int valid = produce_id_file_to_common_dir(common, id);
     if (valid < 0)
     {
@@ -304,6 +304,8 @@ int main(int argc, char *argv[])
         return -10;
     }
 
+    char *deleted_mirror = NULL;
+
     while(( !terminate1 ) && (!terminate2) )
     {
         length = read(fd, buffer + read_offset, sizeof(buffer) - read_offset);
@@ -384,6 +386,45 @@ int main(int argc, char *argv[])
             else if (event->mask & IN_DELETE)
             {
                 printf("WD:%i in_delete %s %s COOKIE=%u\n", event->wd , target_type(event), target_name(event), event->cookie);
+
+                pid_t pid3 = fork();
+                if (pid3 < 0)
+                {
+                    fprintf(stderr, "Error in fork at mirror_client.c .\n");
+                    return -11;
+                }
+                else if (pid3 == 0)
+                {
+                    char deleted_id[15];
+                    int i;
+                    for (i = 0; i < event->len; i++)
+                    {
+                        if (event->name[i] == '.')
+                            break;
+                        deleted_id[i] = event->name[i];
+                    }
+                    deleted_id[i] = '\0';
+
+                    deleted_mirror = (char*)malloc( (strlen(mirror) + strlen(deleted_id) + 2 ) * sizeof(char));
+                    if (deleted_mirror == NULL)
+                    {
+                        fprintf(stderr, "Error in malloc at mirror_client.c\n");
+                        return -3;
+                    }
+                    
+                    strcpy(deleted_mirror,mirror);
+                    strcat(deleted_mirror,"/");
+                    strcat(deleted_mirror,deleted_id);
+
+                    execlp("rm", "rm", "-rf" , deleted_mirror , (char *)NULL);
+
+                    fprintf(stderr, "Error in execl at mirror_client.c .\n");
+                    return -12;
+                }
+                else
+                {   int status ;
+                    while((waitpid(pid3,&status , WNOHANG)) == 0 );
+                }
             }
            
             //advance read_ptr to the beginning of the next event
@@ -399,6 +440,51 @@ int main(int argc, char *argv[])
         }
         else
             read_offset = 0;
+    }
+
+    free(deleted_mirror);
+
+    char id_str[16];
+    sprintf(id_str, "%d.id", id);
+
+    char *id_file;
+
+    id_file = (char *)malloc((strlen(common) + strlen(id_str) + 2) * sizeof(char));
+    if (id_file == NULL)
+    {
+        fprintf(stderr, "Error in malloc at mirror_functions.c");
+        return -2;
+    }
+
+    strcpy(id_file, common);
+    strcat(id_file, "/");
+    strcat(id_file, id_str);
+
+    if (remove(id_file) == 0)
+        printf("Deleted %s successfully\n",id_file);
+    else
+        printf("Unable to delete the file %s\n",id_file);
+    free(id_file);
+
+    pid_t pid4 = fork();
+    if (pid4 < 0)
+    {
+        fprintf(stderr, "Error in fork at mirror_client.c .\n");
+        return -11;
+    }
+    else if (pid4 == 0)
+    {
+        printf("Now will delete the client's mirror with id :%d \n",id);
+        execlp("rm", "rm", "-rf", mirror, (char *)NULL);
+
+        fprintf(stderr, "Error in execl at mirror_client.c .\n");
+        return -12;
+    }
+    else
+    {
+        int status;
+        while ((waitpid(pid4, &status, WNOHANG)) == 0)
+            ;
     }
 
     free(mirror);

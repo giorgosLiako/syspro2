@@ -17,8 +17,8 @@ int main(int argc , char* argv[])
     char* fifo_name;
 
     char* buffer = NULL;
-    int b_size = atoi(argv[5]);
-    buffer = (char*) malloc(b_size * sizeof(char));
+    int buffer_size = atoi(argv[5]);
+    buffer = (char*) malloc(buffer_size * sizeof(char));
     if (buffer == NULL)
     {
         fprintf(stderr, "Error in malloc at sender.c .\n");
@@ -98,7 +98,12 @@ int main(int argc , char* argv[])
             struct stat st;
             stat(b, &st);
             int file_size = (int)st.st_size; 
-        
+
+            int is_dir = 0;
+            if ( (st.st_mode & S_IFMT) == __S_IFDIR)
+            {   is_dir = 1;
+                file_size = 0;
+            }
             bytes = write(writefd, &(file_size), 4);
             if (bytes < 0)
             {
@@ -110,15 +115,67 @@ int main(int argc , char* argv[])
             else
                 printf("Wrote %d bytes(filesize: %d)\n", bytes,file_size);
 
+            unsigned short dir = 1 , no_dir = 0;
+            
+            if (is_dir == 1)
+                bytes = write(writefd, &dir, sizeof(unsigned short));
+            else
+                bytes = write(writefd, &no_dir , sizeof(unsigned short));    
+            if (bytes < 0)
+            {
+                fprintf(stderr, "Error in write at sender.c \n");
+                return -4;
+            }
+            if (bytes != 2)
+                printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
+            else
+                printf("Wrote %d bytes (is dir : %d)\n", bytes, is_dir);
+
+            if (is_dir == 1)
+                continue;
 
             int fd = open(b, O_RDONLY);
             if (fd >= 0)
-            {
-                int s ;
-                s = read(fd, buffer , file_size);
-                if (s>0)
-                    write(writefd , buffer, s);
-                printf("Wrote the whole file %d bytes\n",s);
+            {   int writen_bytes = 0;
+                if (file_size <= buffer_size)
+                {
+                    int s;
+                    s = read(fd, buffer, file_size);
+                    if (s > 0)
+                    {   writen_bytes = writen_bytes + s; 
+                        write(writefd, buffer, file_size);
+                    }
+                }
+                else
+                {
+                    int counter = file_size;
+                    while (counter > 0)
+                    {   
+                        int s;
+                        if (counter > buffer_size)
+                        {   
+                            s = read(fd,buffer,buffer_size);
+                            if (s > 0)
+                            {   writen_bytes = writen_bytes + s; 
+                                write(writefd , buffer , buffer_size);
+                            }
+                            counter = counter - buffer_size;
+                        }
+                        else
+                        {
+                            s = read(fd,buffer,counter);
+                            if (s > 0)
+                            {   writen_bytes = writen_bytes + s; 
+                                write(writefd , buffer , counter);
+                            }
+                            counter = 0 ;
+                        }
+                        
+                    }
+                }
+                
+                printf("Wrote the whole file %d bytes\n",writen_bytes);
+                
             }
             close(fd);
         }
@@ -135,6 +192,8 @@ int main(int argc , char* argv[])
     else
         printf("Wrote 2 bytes\n");
     printf("END OF SENDER\n");
+
+    unlink(fifo_name);
     close(writefd);
     closedir(input_dir);
     free(fifo_name);
