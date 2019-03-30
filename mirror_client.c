@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <wait.h>
 
 #include "mirror_functions.h"
 
@@ -33,6 +34,14 @@ void sigquit_handler(int sig)
 {
     terminate2 = 1;
 }
+
+int receiver_signal = 0;
+
+void sigusr1_handler(int sig)
+{
+    receiver_signal = receiver_signal + 1;
+}
+
 int main(int argc, char *argv[])
 {
     if (argc < 13)
@@ -40,6 +49,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error 01: Expected more argument(s) , %d given.\n", argc);
         return -1;
     }
+
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, sigquit_handler);
+    signal(SIGUSR1, sigusr1_handler);
 
     int id;
     int buffer_size;
@@ -143,12 +156,12 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Input directory does not exist.\n");
         return -4;
     }
+    closedir(input_dir);
 
     DIR *mirror_dir = opendir(mirror);
     if (mirror_dir != NULL)
     {
         closedir(mirror_dir);
-        closedir(input_dir);
 
         free(mirror);
         free(input);
@@ -167,6 +180,7 @@ int main(int argc, char *argv[])
         }
     }
 
+
     DIR *common_dir = opendir(common);
     if (common_dir == NULL)
     {
@@ -175,13 +189,17 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Error: Failed to create common directory %s", common);
             return -6;
         }
+        common_dir = opendir(common);
+        if (common_dir == NULL)
+        {
+            fprintf(stderr,"Error in opening the comon directory\n");
+            return -10;
+        }
     }
-
+    
     int valid = produce_id_file_to_common_dir(common, id);
     if (valid < 0)
     {
-        closedir(common_dir);
-        closedir(input_dir);
         free(mirror);
         free(input);
         free(common);
@@ -191,6 +209,75 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ID file already exist in common directory.\n");
         return -7;
     }
+
+    char id_filename[15];
+    sprintf(id_filename,"%d.id",id);
+    struct dirent *dirent_ptr;
+    printf("HERE\n");
+    while ((dirent_ptr = readdir(common_dir)) != NULL)
+    {
+        if ( (strstr(dirent_ptr->d_name, ".id") != NULL) && ( strcmp(dirent_ptr->d_name,id_filename) != 0))  
+        {
+            char id_str[15];
+            char buff_size[15];
+            sprintf(id_str, "%d", id);
+            sprintf(buff_size, "%d", buffer_size);
+            char new_id[15];
+            int i;
+            for (i = 0; i < strlen(dirent_ptr->d_name); i++)
+            {
+                if (dirent_ptr->d_name[i] == '.')
+                    break;
+                new_id[i] = dirent_ptr->d_name[i];
+            }
+            new_id[i] = '\0';
+
+            pid_t pid1 = fork();
+            if (pid1 < 0)
+            {
+                fprintf(stderr, "Error in fork at mirror_client.c .\n");
+                return -11;
+            }
+            else if (pid1 == 0)
+            {
+                execl("receiver", "receiver", common, id_str, new_id, mirror, buff_size, (char *)NULL);
+
+                fprintf(stderr, "Error in execl at mirror_client.c .\n");
+                return -12;
+            }
+            else
+            {
+                pid_t pid2 = fork();
+                if (pid2 < 0)
+                {
+                    fprintf(stderr, "Fail in fork at mirror_client.c .\n");
+                    return -11;
+                }
+                else if (pid2 == 0)
+                {
+                    execl("sender", "sender", common, id_str, new_id, input, buff_size, (char *)NULL);
+
+                    fprintf(stderr, "Error in execl at mirror_client.c .\n");
+                    return -12;
+                }
+                else
+                {
+                    int status;
+
+                    if (receiver_signal > 0)
+                        printf("SIGNAL CAME\n");
+
+                    while ((waitpid(pid1, &status, WNOHANG)) == 0)
+                        ;
+
+                    while ((waitpid(pid2, &status, WNOHANG)) == 0)
+                        ;
+                }
+            }
+        }
+    }
+    closedir(common_dir);
+    printf("END\n");
 
     int fd = inotify_init();
     if (fd < 0)
@@ -205,8 +292,6 @@ int main(int argc, char *argv[])
 	{	fprintf(stderr,"Failed to add watch %s\n", common);
         return -9;
     }
-    signal(SIGINT, sigint_handler);
-    signal(SIGQUIT, sigquit_handler);
 
     int length = 0, read_ptr = 0 , read_offset = 0; //management of variable length events
     char buffer[EVENT_BUF_LEN];        //the buffer to use for reading the events
@@ -237,7 +322,64 @@ int main(int argc, char *argv[])
 
             if (event->mask & IN_CREATE)
             {
-                printf("WD:%i in_create %s %s COOKIE=%u\n", event->wd , target_type(event), target_name(event), event->cookie);
+                printf("WD:%i in_create %s %s COOKIE=%u\n", event->wd, target_type(event), target_name(event), event->cookie);
+                if ( strstr(event->name,".id") != NULL)
+                {   
+                    char id_str[15] ;
+                    char buff_size[15];
+                    sprintf(id_str,"%d",id);
+                    sprintf(buff_size,"%d",buffer_size);
+                    char new_id[15];
+                    int i;
+                    for(i = 0; i < event->len ; i++)
+                    {
+                        if (event->name[i] == '.')
+                            break;
+                        new_id[i] = event->name[i]; 
+                    }
+                    new_id[i] = '\0';
+
+                    pid_t pid1 = fork();
+                    if (pid1 < 0)
+                    {
+                        fprintf(stderr,"Error in fork at mirror_client.c .\n");
+                        return -11;
+                    }
+                    else if (pid1 == 0) 
+                    {   
+                        execl("receiver", "receiver", common , id_str ,new_id , mirror , buff_size, (char *)NULL);
+
+                        fprintf(stderr,"Error in execl at mirror_client.c .\n");
+                        return -12;
+                    }
+                    else
+                    {
+                        pid_t pid2 = fork();
+                        if (pid2 < 0)
+                        {
+                            fprintf(stderr, "Fail in fork at mirror_client.c .\n");
+                            return -11;
+                        }
+                        else if (pid2 == 0)
+                        {
+                            execl("sender", "sender", common, id_str , new_id , input, buff_size , (char *)NULL);
+
+                            fprintf(stderr, "Error in execl at mirror_client.c .\n");
+                            return -12;
+                        }
+                        else
+                        {   int status;
+
+                            if (receiver_signal > 0)
+                                printf("SIGNAL CAME\n");
+
+                            while ((waitpid(pid1, &status, WNOHANG)) == 0);
+
+                            while ((waitpid(pid2, &status, WNOHANG)) == 0);
+                        }
+                    }
+                    
+                }
             }
             else if (event->mask & IN_DELETE)
             {
@@ -259,8 +401,6 @@ int main(int argc, char *argv[])
             read_offset = 0;
     }
 
-    closedir(common_dir);
-    closedir(input_dir);
     free(mirror);
     free(input);
     free(common);
