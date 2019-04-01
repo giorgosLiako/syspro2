@@ -10,6 +10,8 @@
 #include <fcntl.h>
 #include <sys/errno.h>
 
+#include "sender_functions.h"
+
 extern int errno;
 
 int main(int argc , char* argv[])
@@ -53,132 +55,27 @@ int main(int argc , char* argv[])
         return -5;
     }
 
-    DIR * input_dir = opendir(argv[4]);
-    if (input_dir == NULL)
+    FILE* log = fopen(argv[6] ,"a");
+    if (log == NULL )
     {
-        fprintf(stderr,"Error in opening input dir. \n");
-        return -3;
+        fprintf(stderr, "Error can not open log_file for writing in sender.c\n");
+        return -5;
     }
-    printf("START OF LOOP SENDER\n");
-    struct dirent *dirent_ptr;
 
-    while ((dirent_ptr = readdir(input_dir)) != NULL)
-    {  
-        if (strcmp(dirent_ptr->d_name, ".") && strcmp(dirent_ptr->d_name, ".."))
+    int res = communication_sender_protocol(argv[4] ,NULL, writefd ,buffer , buffer_size, log);
+    if (res < 0)
+    {
+        fprintf(stderr,"Something went wrong\n");
+        if (res == -1)
         {
-            printf("LOOP\n");
-            printf("NAME:   %s\n",dirent_ptr->d_name);
-            unsigned short name_size = strlen(dirent_ptr->d_name) +1;
-            int bytes = write(writefd,&name_size, sizeof(unsigned short));
-            if (bytes < 0)
-            {
-                fprintf(stderr,"Error in write at sender.c \n");
-                return -4;
-            }
-            if (bytes != 2)
-                printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n",bytes);
-            else
-                printf("Wrote 2 bytes\n");
-            
-            bytes = write(writefd, dirent_ptr->d_name , name_size);
-            if (bytes < 0)
-            {
-                fprintf(stderr, "Error in write at sender.c \n");
-                return -4;
-            }
-            if (bytes != name_size)
-                printf("You should write only %d bytes here , according to the ptotocol, %d bytes written\n",name_size, bytes);
-            else 
-                printf("Wrote %d bytes\n",name_size);
-
-            char b[500];
-            strcpy(b,argv[4]);
-            strcat(b,"/");
-            strcat(b,dirent_ptr->d_name);
-            struct stat st;
-            stat(b, &st);
-            int file_size = (int)st.st_size; 
-
-            int is_dir = 0;
-            if ( (st.st_mode & S_IFMT) == __S_IFDIR)
-            {   is_dir = 1;
-                file_size = 0;
-            }
-            bytes = write(writefd, &(file_size), 4);
-            if (bytes < 0)
-            {
-                fprintf(stderr, "Error in write at sender.c \n");
-                return -4;
-            }
-            if (bytes != 4)
-                printf("You should write only 4 bytes here , according to the ptotocol, %d bytes written\n",bytes);
-            else
-                printf("Wrote %d bytes(filesize: %d)\n", bytes,file_size);
-
-            unsigned short dir = 1 , no_dir = 0;
-            
-            if (is_dir == 1)
-                bytes = write(writefd, &dir, sizeof(unsigned short));
-            else
-                bytes = write(writefd, &no_dir , sizeof(unsigned short));    
-            if (bytes < 0)
-            {
-                fprintf(stderr, "Error in write at sender.c \n");
-                return -4;
-            }
-            if (bytes != 2)
-                printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
-            else
-                printf("Wrote %d bytes (is dir : %d)\n", bytes, is_dir);
-
-            if (is_dir == 1)
-                continue;
-
-            int fd = open(b, O_RDONLY);
-            if (fd >= 0)
-            {   int writen_bytes = 0;
-                if (file_size <= buffer_size)
-                {
-                    int s;
-                    s = read(fd, buffer, file_size);
-                    if (s > 0)
-                    {   writen_bytes = writen_bytes + s; 
-                        write(writefd, buffer, file_size);
-                    }
-                }
-                else
-                {
-                    int counter = file_size;
-                    while (counter > 0)
-                    {   
-                        int s;
-                        if (counter > buffer_size)
-                        {   
-                            s = read(fd,buffer,buffer_size);
-                            if (s > 0)
-                            {   writen_bytes = writen_bytes + s; 
-                                write(writefd , buffer , buffer_size);
-                            }
-                            counter = counter - buffer_size;
-                        }
-                        else
-                        {
-                            s = read(fd,buffer,counter);
-                            if (s > 0)
-                            {   writen_bytes = writen_bytes + s; 
-                                write(writefd , buffer , counter);
-                            }
-                            counter = 0 ;
-                        }
-                        
-                    }
-                }
-                
-                printf("Wrote the whole file %d bytes\n",writen_bytes);
-                
-            }
-            close(fd);
+            kill(getppid(),SIGUSR1);
+            unlink(fifo_name);
+            close(writefd);
+            fclose(log);
+            free(fifo_name);
+            free(buffer);
         }
+        return -1;
     }
     unsigned short end = 0;
     int bytes = write(writefd, &(end), sizeof(unsigned short));
@@ -190,12 +87,12 @@ int main(int argc , char* argv[])
     if (bytes != 2)
         printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
     else
-        printf("Wrote 2 bytes\n");
+        fprintf(log,"END:Wrote %d bytes\n",bytes);
     printf("END OF SENDER\n");
 
     unlink(fifo_name);
     close(writefd);
-    closedir(input_dir);
+    fclose(log);
     free(fifo_name);
     free(buffer);
     return 0 ;

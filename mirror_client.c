@@ -35,11 +35,20 @@ void sigquit_handler(int sig)
     terminate2 = 1;
 }
 
-int receiver_signal = 0;
+int user1_signals = 0;
+int user2_signals = 0;
+
+int start = 0;
 
 void sigusr1_handler(int sig)
 {
-    receiver_signal = receiver_signal + 1;
+    user1_signals = user1_signals + 1;
+    printf("SIGUSR1: Signals %d\n", user1_signals);
+}
+void sigusr2_handler(int sig)
+{
+    user2_signals = user2_signals + 1;
+    printf("SIGUSR2: Signals %d \n", user2_signals);
 }
 
 int main(int argc, char *argv[])
@@ -53,6 +62,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, sigquit_handler);
     signal(SIGUSR1, sigusr1_handler);
+    signal(SIGUSR2, sigusr2_handler);
 
     int id;
     int buffer_size;
@@ -214,6 +224,8 @@ int main(int argc, char *argv[])
     sprintf(id_filename,"%d.id",id);
     struct dirent *dirent_ptr;
     printf("HERE\n");
+
+start_again:
     while ((dirent_ptr = readdir(common_dir)) != NULL)
     {
         if ( (strstr(dirent_ptr->d_name, ".id") != NULL) && ( strcmp(dirent_ptr->d_name,id_filename) != 0))  
@@ -240,7 +252,7 @@ int main(int argc, char *argv[])
             }
             else if (pid1 == 0)
             {
-                execl("receiver", "receiver", common, id_str, new_id, mirror, buff_size, (char *)NULL);
+                execl("receiver", "receiver", common, id_str, new_id, mirror, buff_size,log_file, (char *)NULL);
 
                 fprintf(stderr, "Error in execl at mirror_client.c .\n");
                 return -12;
@@ -255,28 +267,39 @@ int main(int argc, char *argv[])
                 }
                 else if (pid2 == 0)
                 {
-                    execl("sender", "sender", common, id_str, new_id, input, buff_size, (char *)NULL);
+                    execl("sender", "sender", common, id_str, new_id, input, buff_size ,log_file, (char *)NULL);
 
                     fprintf(stderr, "Error in execl at mirror_client.c .\n");
                     return -12;
                 }
                 else
                 {
-                    int status;
+                    int status1 = 0 , status2 = 0;
 
-                    if (receiver_signal > 0)
-                        printf("SIGNAL CAME\n");
-
-                    while ((waitpid(pid1, &status, WNOHANG)) == 0)
+                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0))
                         ;
 
-                    while ((waitpid(pid2, &status, WNOHANG)) == 0)
+                    if (user2_signals == 1)
+                    {
+                        closedir(common_dir);
+                        goto end;
+                    }
+
+                    while ((waitpid(pid2, &status2, WNOHANG)) == 0)
                         ;
+
+                    /*if ( ( (status1 != 0) || (status2 != 0)) && (user1_signals <= 3))
+                    {
+                        closedir(common_dir);
+                        common_dir = opendir(common);
+                        goto start_again;
+                    }*/
                 }
             }
         }
     }
     closedir(common_dir);
+    start = 1;
     printf("END\n");
 
     int fd = inotify_init();
@@ -349,13 +372,14 @@ int main(int argc, char *argv[])
                     }
                     else if (pid1 == 0) 
                     {   
-                        execl("receiver", "receiver", common , id_str ,new_id , mirror , buff_size, (char *)NULL);
+                        execl("receiver", "receiver", common , id_str ,new_id , mirror , buff_size ,log_file, (char *)NULL);
 
                         fprintf(stderr,"Error in execl at mirror_client.c .\n");
                         return -12;
                     }
                     else
                     {
+
                         pid_t pid2 = fork();
                         if (pid2 < 0)
                         {
@@ -364,20 +388,24 @@ int main(int argc, char *argv[])
                         }
                         else if (pid2 == 0)
                         {
-                            execl("sender", "sender", common, id_str , new_id , input, buff_size , (char *)NULL);
+                            execl("sender", "sender", common, id_str , new_id , input, buff_size ,log_file, (char *)NULL);
 
                             fprintf(stderr, "Error in execl at mirror_client.c .\n");
                             return -12;
                         }
                         else
-                        {   int status;
+                        {
+                            int status1 = 0, status2 = 0;
+                            while ( ((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0)) 
+                            ;
 
-                            if (receiver_signal > 0)
-                                printf("SIGNAL CAME\n");
+                            if (user2_signals == 1)
+                            {
+                                goto end;
+                            }
 
-                            while ((waitpid(pid1, &status, WNOHANG)) == 0);
-
-                            while ((waitpid(pid2, &status, WNOHANG)) == 0);
+                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
+                            
                         }
                     }
                     
@@ -423,6 +451,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {   int status ;
+                    free(deleted_mirror);
                     while((waitpid(pid3,&status , WNOHANG)) == 0 );
                 }
             }
@@ -441,13 +470,12 @@ int main(int argc, char *argv[])
         else
             read_offset = 0;
     }
-
-    free(deleted_mirror);
+end: if (user2_signals == 1) printf("Good\n");
 
     char id_str[16];
     sprintf(id_str, "%d.id", id);
 
-    char *id_file;
+    char *id_file = NULL;
 
     id_file = (char *)malloc((strlen(common) + strlen(id_str) + 2) * sizeof(char));
     if (id_file == NULL)
@@ -493,6 +521,7 @@ int main(int argc, char *argv[])
     free(log_file);
 }
 
+
 const char *target_type(struct inotify_event *event)
 {
     if (event->len == 0)
@@ -505,3 +534,4 @@ const char *target_name(struct inotify_event *event)
 {
     return event->len > 0 ? event->name : NULL;
 }
+

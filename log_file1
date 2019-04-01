@@ -1,0 +1,394 @@
+Read 2 bytes
+Read 2 bytes
+Read 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 43 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 42 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 42 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 42 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 52 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 18 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 18)
+Read 2 bytes (is dir : 0)
+Read the whole file 18 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 20)
+Read 2 bytes (is dir : 0)
+Read the whole file 20 bytes
+END:Read 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 18 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 18)
+Read 2 bytes (is dir : 0)
+Read the whole file 18 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 20)
+Read 2 bytes (is dir : 0)
+Read the whole file 20 bytes
+END:Read 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 18 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 18)
+Read 2 bytes (is dir : 0)
+Read the whole file 18 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 20)
+Read 2 bytes (is dir : 0)
+Read the whole file 20 bytes
+END:Read 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 15)
+Read 2 bytes (is dir : 0)
+Read the whole file 15 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 19)
+Read 2 bytes (is dir : 0)
+Read the whole file 19 bytes
+END:Read 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 14)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 14 bytes
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 18 bytes
+Wrote 4 bytes(filesize: 27)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 27 bytes
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 17 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 2 bytes
+Wrote 27 bytes
+Wrote 4 bytes(filesize: 13)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 13 bytes
+Wrote 2 bytes
+Wrote 10 bytes
+Wrote 4 bytes(filesize: 44)
+Wrote 2 bytes (is dir : 0)
+Wrote the whole file 44 bytes
+END:Wrote 2 bytes
+Read 2 bytes
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 18 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 18)
+Read 2 bytes (is dir : 0)
+Read the whole file 18 bytes
+Read 2 bytes
+Read 10 bytes
+Read 4 bytes (file size: 20)
+Read 2 bytes (is dir : 0)
+Read the whole file 20 bytes
+END:Read 2 bytes
