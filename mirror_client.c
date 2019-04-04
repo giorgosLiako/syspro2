@@ -35,20 +35,22 @@ void sigquit_handler(int sig)
     terminate2 = 1;
 }
 
-int user1_signals = 0;
 int user2_signals = 0;
 
-int start = 0;
-
-void sigusr1_handler(int sig)
-{
-    user1_signals = user1_signals + 1;
-    printf("SIGUSR1: Signals %d\n", user1_signals);
-}
 void sigusr2_handler(int sig)
 {
     user2_signals = user2_signals + 1;
-    printf("SIGUSR2: Signals %d \n", user2_signals);
+    printf("SIGUSR2(30s error): Signals %d \n", user2_signals);
+}
+
+int user1_signals = 0;
+
+void sigusr1_handler(int signo, siginfo_t *si,void* data)
+{
+    
+    user1_signals = 1;
+    printf("SIGUSR1(error in pipe): Signals %d \n", user1_signals);
+    printf("Signal received from %ld\n",(unsigned long)si->si_pid);
 }
 
 int main(int argc, char *argv[])
@@ -61,15 +63,20 @@ int main(int argc, char *argv[])
 
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, sigquit_handler);
-    signal(SIGUSR1, sigusr1_handler);
     signal(SIGUSR2, sigusr2_handler);
+
+    static struct sigaction act;
+    act.sa_sigaction = sigusr1_handler;
+    act.sa_flags = SA_SIGINFO;
+    sigfillset(&(act.sa_mask));
+    sigaction(SIGUSR1, &act, NULL);
 
     int id;
     int buffer_size;
-    char *common;
-    char *input;
-    char *mirror;
-    char *log_file;
+    char *common = NULL;
+    char *input = NULL;
+    char *mirror = NULL;
+    char *log_file = NULL;
 
     /*take the arguments from command line */
     for (int i = 1; i < argc; i++)
@@ -224,8 +231,8 @@ int main(int argc, char *argv[])
     sprintf(id_filename,"%d.id",id);
     struct dirent *dirent_ptr;
     printf("HERE\n");
+    int retry = 0;
 
-start_again:
     while ((dirent_ptr = readdir(common_dir)) != NULL)
     {
         if ( (strstr(dirent_ptr->d_name, ".id") != NULL) && ( strcmp(dirent_ptr->d_name,id_filename) != 0))  
@@ -236,6 +243,7 @@ start_again:
             sprintf(buff_size, "%d", buffer_size);
             char new_id[15];
             int i;
+start_again:
             for (i = 0; i < strlen(dirent_ptr->d_name); i++)
             {
                 if (dirent_ptr->d_name[i] == '.')
@@ -243,7 +251,7 @@ start_again:
                 new_id[i] = dirent_ptr->d_name[i];
             }
             new_id[i] = '\0';
-
+  
             pid_t pid1 = fork();
             if (pid1 < 0)
             {
@@ -265,7 +273,7 @@ start_again:
                     fprintf(stderr, "Fail in fork at mirror_client.c .\n");
                     return -11;
                 }
-                else if (pid2 == 0)
+                else if ((pid2 == 0) && ( user1_signals ==0))
                 {
                     execl("sender", "sender", common, id_str, new_id, input, buff_size ,log_file, (char *)NULL);
 
@@ -276,30 +284,60 @@ start_again:
                 {
                     int status1 = 0 , status2 = 0;
 
-                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0))
+                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) &&(user1_signals == 0))
                         ;
 
                     if (user2_signals == 1)
                     {
                         closedir(common_dir);
+                        kill(pid2,SIGINT);
                         goto end;
                     }
 
-                    while ((waitpid(pid2, &status2, WNOHANG)) == 0)
+                    if (user1_signals == 1)
+                    {
+                        printf("RETRY: %d\n", retry);
+                        user1_signals = 0;
+                        retry = retry + 1; 
+                        if (retry < 3)
+                        {
+                            kill(pid2, SIGINT);
+                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
+                            goto start_again;
+                        }
+                        else
+                        {
+                            kill(pid2, SIGINT);
+                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
+                            closedir(common_dir);
+                            goto end;
+                        }
+                    }               
+
+                    while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
                         ;
 
-                    /*if ( ( (status1 != 0) || (status2 != 0)) && (user1_signals <= 3))
-                    {
-                        closedir(common_dir);
-                        common_dir = opendir(common);
-                        goto start_again;
-                    }*/
-                }
+                    if (user1_signals == 1)
+                    {   user1_signals = 0;
+                        printf("RETRY: %d\n", retry);
+                        retry = retry + 1;
+                        if (retry < 3)
+                        {
+                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
+                            goto start_again;
+                        }
+                        else
+                        {
+                            closedir(common_dir);
+                            goto end;
+                        }
+                        
+                    }
+                }   
             }
         }
     }
     closedir(common_dir);
-    start = 1;
     printf("END\n");
 
     int fd = inotify_init();
@@ -356,7 +394,7 @@ start_again:
                     sprintf(buff_size,"%d",buffer_size);
                     char new_id[15];
                     int i;
-                    for(i = 0; i < event->len ; i++)
+start_again2:       for(i = 0; i < event->len ; i++)
                     {
                         if (event->name[i] == '.')
                             break;
@@ -394,18 +432,53 @@ start_again:
                             return -12;
                         }
                         else
-                        {
-                            int status1 = 0, status2 = 0;
-                            while ( ((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0)) 
-                            ;
+                        {   int status1 = 0 , status2 = 0 ;
+                            while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) && (user1_signals == 0))
+                                ;
 
                             if (user2_signals == 1)
                             {
+                               
+                                kill(pid2, SIGINT);
                                 goto end;
                             }
 
-                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
-                            
+                            if (user1_signals == 1)
+                            {
+                                printf("RETRY: %d\n", retry);
+                                user1_signals = 0;
+                                retry = retry + 1;
+                                if (retry < 3)
+                                {
+                                    kill(pid2, SIGINT);
+                                    goto start_again2;
+                                }
+                                else
+                                {
+                                    kill(pid2, SIGINT);
+                                    
+                                    goto end;
+                                }
+                            }
+
+                            while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
+                                ;
+
+                            if (user1_signals == 1)
+                            {
+                                user1_signals = 0;
+                                printf("RETRY: %d\n", retry);
+                                retry = retry + 1;
+                                if (retry < 3)
+                                {
+                                    goto start_again2;
+                                }
+                                else
+                                {
+                                   
+                                    goto end;
+                                }
+                            }
                         }
                     }
                     

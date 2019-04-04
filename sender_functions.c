@@ -8,8 +8,14 @@
 #include <dirent.h>
 #include <fcntl.h>
 
-int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, char* buffer ,int buffer_size, FILE* log)
+extern int terminate_sender;
+
+
+int communication_sender_protocol(char *dir_name, char *subdir, int writefd, char *buffer, int buffer_size, FILE *log)
 {
+    if (terminate_sender == 1)
+        return -1;
+
     DIR *dir = opendir(dir_name);
     if (dir == NULL)
     {
@@ -17,14 +23,14 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
         return -3;
     }
     printf("START OF LOOP SENDER\n");
-    char log_buffer[50];
+
     struct dirent *dirent_ptr;
 
     while ((dirent_ptr = readdir(dir)) != NULL)
-    {
-        if (strcmp(dirent_ptr->d_name, ".") && strcmp(dirent_ptr->d_name, ".."))
+    {   
+        if ( (strcmp(dirent_ptr->d_name, ".") != 0) && ( strcmp(dirent_ptr->d_name, "..") != 0))
         {
-            unsigned short name_size = 0;
+            unsigned short int name_size = 0;
             if (subdir == NULL)
             {   printf("NAME:   %s\n", dirent_ptr->d_name);
                 name_size = strlen(dirent_ptr->d_name) + 1 ;
@@ -34,28 +40,25 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
                 printf("NAME:   %s/%s\n",subdir,dirent_ptr->d_name);
                 name_size = strlen(dirent_ptr->d_name) + strlen(subdir) + 2 ;
             }
-            int bytes = write(writefd, &name_size, sizeof(unsigned short));
+            int bytes = write(writefd, &name_size, sizeof(unsigned short int ));
             if (bytes < 0)
             {
                 fprintf(stderr, "Error in write at sender_functions.c \n");
-                return -1;
             }
             if (bytes != 2)
             {
-                printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
-                return -1;
+                fprintf(log,"You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
             }
             else
                 fprintf(log,"Wrote %d bytes\n",bytes);
-            
-            
-            //write(log_fd,)
 
+            char *file_name = NULL;
+            
             if (subdir == NULL)
                 bytes = write(writefd, dirent_ptr->d_name, name_size);
             else
             {
-                char* file_name = (char*) malloc( (strlen(subdir)+ strlen(dirent_ptr->d_name)+1) * sizeof(char));
+                file_name = (char*) malloc( (strlen(subdir)+ strlen(dirent_ptr->d_name)+ 2 ) * sizeof(char));
                 if (file_name == NULL)
                 {
                     fprintf(stderr,"Error in malloc at sender_functions.c\n");
@@ -65,18 +68,16 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
                 strcat(file_name,"/");
                 strcat(file_name,dirent_ptr->d_name);
                 bytes = write(writefd, file_name, name_size);
-                free(file_name);
+                //free(file_name);
             }
             
             if (bytes < 0)
             {
                 fprintf(stderr, "Error in write at sender.c \n");
-                return -1;
             }
             if (bytes != name_size)
             {
-                printf("You should write only %d bytes here , according to the ptotocol, %d bytes written\n", name_size, bytes);
-                return -1;
+                fprintf(log,"You should write only %d bytes here , according to the ptotocol, %d bytes written\n", name_size, bytes);
             }
             else
             {   fprintf(log,"Wrote %d bytes\n", bytes);
@@ -93,7 +94,7 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
             strcat(full_path_name, dirent_ptr->d_name);
             struct stat st;
             stat(full_path_name, &st);
-            int file_size = (int)st.st_size;
+            unsigned int file_size = (unsigned int)st.st_size;
 
             int is_dir = 0;
             if ((st.st_mode & S_IFMT) == __S_IFDIR)
@@ -101,7 +102,7 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
                 is_dir = 1;
                 file_size = 0;
             }
-            bytes = write(writefd, &(file_size), 4);
+            bytes = write(writefd, &(file_size), sizeof(unsigned int));
             if (bytes < 0)
             {
                 free(full_path_name);
@@ -113,18 +114,17 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
             {
                 free(full_path_name);
                 closedir(dir);
-                printf("You should write only 4 bytes here , according to the ptotocol, %d bytes written\n", bytes);
-                return -1;
+                fprintf(log,"You should write only 4 bytes here , according to the ptotocol, %d bytes written\n", bytes);
             }
             else
                 fprintf(log,"Wrote %d bytes(filesize: %d)\n", bytes, file_size);
 
-            unsigned short dir = 1, no_dir = 0;
+            unsigned short int dir = 1, no_dir = 0;
 
             if (is_dir == 1)
-                bytes = write(writefd, &dir, sizeof(unsigned short));
+                bytes = write(writefd, &dir, sizeof(unsigned short int));
             else
-                bytes = write(writefd, &no_dir, sizeof(unsigned short));
+                bytes = write(writefd, &no_dir, sizeof(unsigned short int));
             if (bytes < 0)
             {
                 fprintf(stderr, "Error in write at sender.c \n");
@@ -133,7 +133,7 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
             if (bytes != 2)
             {
                 free(full_path_name);
-                printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
+                fprintf(log,"You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
             }
             else
                 fprintf(log,"Wrote %d bytes (is dir : %d)\n", bytes, is_dir);
@@ -154,7 +154,7 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
                 }
                 else
                 {
-                    new_sub_dirname = (char *)malloc((strlen(dirent_ptr->d_name) + strlen(subdir) + 1) * sizeof(char));
+                    new_sub_dirname = (char *)malloc((strlen(dirent_ptr->d_name) + strlen(subdir) + 2) * sizeof(char));
                     if (new_sub_dirname == NULL)
                     {
                         fprintf(stderr, "Error in malloc at sender_functions.c\n");
@@ -164,7 +164,7 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
                     strcat(new_sub_dirname,"/");
                     strcat(new_sub_dirname,dirent_ptr->d_name);
                 }
-                
+                fprintf(log, "Wrote the directory \"%s\" %d bytes\n", new_sub_dirname, file_size);
                 int res = communication_sender_protocol(full_path_name,new_sub_dirname, writefd , buffer , buffer_size,log);
                 free(new_sub_dirname);
                 if (res < 0 )
@@ -181,71 +181,38 @@ int communication_sender_protocol(char* dir_name , char* subdir ,int writefd, ch
 
             int fd = open(full_path_name, O_RDONLY);
             if (fd >= 0)
-            {
-                int writen_bytes = 0;
+            {   
                 int read_bytes = 0;
-                int k = 0;
-                if (file_size <= buffer_size)
+                int write_bytes = 0;
+                while (file_size >= buffer_size)
                 {
-                    int s =0;
-                    s = read(fd, buffer, file_size);
-                    if (s > 0)
-                    {
-                        read_bytes = read_bytes + s;
-                        k = write(writefd, buffer, file_size);
-                        writen_bytes = writen_bytes + k;
-                    }
-                    else 
-                    {
-                        free(full_path_name);
-                        return -1;
-                    }
+                    int r = read(fd, buffer, buffer_size);
+                    int w = write(writefd, buffer, r);
+                    file_size = file_size - r;
+
+                    read_bytes = read_bytes + r;
+                    write_bytes = write_bytes + w;
                 }
-                else
+
+                if (file_size != 0)
                 {
-                    int counter = file_size;
-                    while (counter > 0)
-                    {
-                        int s = 0;
-                        if (counter >= buffer_size)
-                        {
-                            s = read(fd, buffer, buffer_size);
-                            if (s > 0)
-                            {
-                                read_bytes = read_bytes + s;
-                                
-                                k = write(writefd, buffer, buffer_size);
-                                writen_bytes = writen_bytes + k;
-                            }
-                            else
-                            {
-                                close(fd);
-                                free(full_path_name);
-                                return -1;
-                            }
-                            counter = counter - buffer_size;
-                        }
-                        else
-                        {
-                            s = read(fd, buffer, counter);
-                            if (s > 0)
-                            {
-                                read_bytes = read_bytes + s;
-                                k = write(writefd, buffer, counter);
-                                writen_bytes = writen_bytes + k;
-                            }
-                            else
-                            {   close(fd);
-                                free(full_path_name);
-                                return -1;
-                            }
-                            counter = 0;
-                        }
-                    }
+                    int r = read(fd, buffer, file_size);
+                    int w = write(writefd, buffer, r);
+
+                    read_bytes = read_bytes + r;
+                    write_bytes = write_bytes + w;
                 }
-                if (writen_bytes == read_bytes)
-                    fprintf(log,"Wrote the whole file %d bytes\n", read_bytes);
+                if (write_bytes == read_bytes)
+                {
+                    if (subdir == NULL)
+                        fprintf(log, "Wrote the whole file \"%s\" %d bytes\n", dirent_ptr->d_name, read_bytes);
+                    else
+                        fprintf(log, "Wrote the whole file \"%s\" %d bytes\n", file_name, read_bytes);
+                }
             }
+            if (subdir != NULL)
+                free(file_name);
+
             close(fd);
             free(full_path_name);
         }

@@ -12,10 +12,21 @@
 
 #include "sender_functions.h"
 
+int terminate_sender = 0;
+
+void sigint_handler(int sig)
+{
+    terminate_sender = 1;
+}
+
 extern int errno;
 
 int main(int argc , char* argv[])
 {
+    signal(SIGINT, sigint_handler);
+
+    if (terminate_sender == 1)
+        return -1;
     char* fifo_name;
 
     char* buffer = NULL;
@@ -42,15 +53,19 @@ int main(int argc , char* argv[])
     printf("%s\n", fifo_name);
     if ( (mkfifo(fifo_name, 0666) < 0) && (errno != EEXIST))
     {
+        kill(getppid(),SIGUSR1);
         fprintf(stderr, "Error in creation of fifo at sender.c \n");
+        unlink(fifo_name);
         free(fifo_name);
         return -2;
     }
 
     int writefd;
     printf("START OF SENDER\n");
+    //fifo_name[5] = 'a';
     if ((writefd = open(fifo_name, O_WRONLY)) < 0)
     {
+        kill(getppid(), SIGUSR1);
         fprintf(stderr,"Error can not open fifo for writing in sender.c\n");
         return -5;
     }
@@ -68,7 +83,6 @@ int main(int argc , char* argv[])
         fprintf(stderr,"Something went wrong\n");
         if (res == -1)
         {
-            kill(getppid(),SIGUSR1);
             unlink(fifo_name);
             close(writefd);
             fclose(log);
@@ -77,8 +91,8 @@ int main(int argc , char* argv[])
         }
         return -1;
     }
-    unsigned short end = 0;
-    int bytes = write(writefd, &(end), sizeof(unsigned short));
+    unsigned short int end = 0;
+    int bytes = write(writefd, &(end), sizeof(unsigned short int));
     if (bytes < 0)
     {
         fprintf(stderr, "Error in write at sender.c \n");
@@ -95,5 +109,6 @@ int main(int argc , char* argv[])
     fclose(log);
     free(fifo_name);
     free(buffer);
+
     return 0 ;
 }
