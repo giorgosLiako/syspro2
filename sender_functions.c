@@ -205,9 +205,13 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                 if (write_bytes == read_bytes)
                 {
                     if (subdir == NULL)
-                        fprintf(log, "Wrote the whole file \"%s\" %d bytes\n", dirent_ptr->d_name, read_bytes);
+                        fprintf(log, "Wrote %d bytes (the whole file \"%s\") \n", read_bytes, dirent_ptr->d_name);
                     else
-                        fprintf(log, "Wrote the whole file \"%s\" %d bytes\n", file_name, read_bytes);
+                        fprintf(log, "Wrote %d bytes (the whole file \"%s\") \n", read_bytes, file_name);
+                }
+                else
+                {
+                    fprintf(log, "Something went wrong: Read %d bytes write %d bytes\n", read_bytes, write_bytes);
                 }
             }
             if (subdir != NULL)

@@ -218,16 +218,16 @@ int main(int argc, char *argv[])
             }
 
             if (read_bytes == write_bytes)
-                fprintf(log, "Read the whole file \"%s\" %d bytes\n", file_name, read_bytes);
+                fprintf(log, "Read %d bytes (the whole file \"%s\")\n",read_bytes, file_name);
             else
-                fprintf(log, "Read %d bytes write %d bytes\n", read_bytes, write_bytes);
+                fprintf(log, "Something went wrong: Read %d bytes write %d bytes\n", read_bytes, write_bytes);
         } 
         close(fd);
         free(file_name);
         free(full_path);
     }
 
-    fprintf(log,"END:Read %d bytes\n",bytes);
+    fprintf(log,"Read %d bytes (end)\n",bytes);
     printf("END OF RECEIVER\n");
     unlink(fifo_name);
     close(readfd);
