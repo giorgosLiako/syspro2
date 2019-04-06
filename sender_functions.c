@@ -22,7 +22,6 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
         fprintf(stderr, "Error in opening input dir. \n");
         return -3;
     }
-    printf("START OF LOOP SENDER\n");
 
     struct dirent *dirent_ptr;
 
@@ -51,7 +50,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
             
             if (subdir == NULL)
             {
-                printf("NAME:   %s\n", dirent_ptr->d_name);
+                //printf("NAME:   %s\n", dirent_ptr->d_name);
                 bytes = write(writefd, dirent_ptr->d_name, name_size);
             }
             else
@@ -65,7 +64,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                 strcpy(file_name,subdir);
                 strcat(file_name,"/");
                 strcat(file_name,dirent_ptr->d_name);
-                printf("NAME:   %s\n", file_name);
+                //printf("NAME:   %s\n", file_name);
                 bytes = write(writefd, file_name, name_size);
                 //free(file_name);
             }
@@ -180,7 +179,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
 
             int fd = open(full_path_name, O_RDONLY);
             if (fd >= 0)
-            {   
+            {   unsigned int temp_file_size = file_size;
                 int read_bytes = 0;
                 int write_bytes = 0;
                 while (file_size >= buffer_size)
@@ -193,15 +192,16 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                     write_bytes = write_bytes + w;
                 }
 
-                if (file_size != 0)
+                while(file_size > 0)
                 {
                     int r = read(fd, buffer, file_size);
                     int w = write(writefd, buffer, r);
+                    file_size = file_size - r;
 
                     read_bytes = read_bytes + r;
                     write_bytes = write_bytes + w;
                 }
-                if (write_bytes == read_bytes)
+                if ((write_bytes == read_bytes) && ( write_bytes == temp_file_size))
                 {
                     if (subdir == NULL)
                         fprintf(log, "Wrote %d bytes (sent the whole file \"%s\") \n", read_bytes, dirent_ptr->d_name);
@@ -210,7 +210,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                 }
                 else
                 {
-                    fprintf(log, "Something went wrong: Read %d bytes write %d bytes\n", read_bytes, write_bytes);
+                    fprintf(log,"Something went wrong: Read %d bytes write %d bytes(size: %d)\n", read_bytes, write_bytes,temp_file_size);
                 }
             }
             if (subdir != NULL)

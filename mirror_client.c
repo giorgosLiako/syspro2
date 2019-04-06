@@ -292,7 +292,7 @@ start_again:
                 {
                     int status1 = 0 , status2 = 0;
 
-                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) /*&& (user2_signals == 0) &&(user1_signals == 0)*/)
+                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) &&(user1_signals == 0))
                         ;
 
                     if (user2_signals == 1)
@@ -320,7 +320,7 @@ start_again:
                         }
                     }               
 
-                    while (((waitpid(pid2, &status2, WNOHANG)) == 0) )//&& (user1_signals == 0))
+                    while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
                         ;
 
                     if (user1_signals == 1)
@@ -438,7 +438,7 @@ start_again2:       for(i = 0; i < event->len ; i++)
                         }
                         else
                         {   int status1 = 0 , status2 = 0 ;
-                            while (((waitpid(pid1, &status1, WNOHANG)) == 0) /*&& (user2_signals == 0) && (user1_signals == 0)*/)
+                            while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) && (user1_signals == 0))
                                 ;
 
                             if (user2_signals == 1)
@@ -466,7 +466,7 @@ start_again2:       for(i = 0; i < event->len ; i++)
                                 }
                             }
 
-                            while (((waitpid(pid2, &status2, WNOHANG)) == 0) )//&& (user1_signals == 0))
+                            while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
                                 ;
 
                             if (user1_signals == 1)

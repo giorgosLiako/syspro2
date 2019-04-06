@@ -101,7 +101,6 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error can not open log_file for writing in sender.c\n");
         return -5;
     }
-
     int readfd;
     printf("START OF RECEIVER\n");
 
@@ -117,7 +116,6 @@ int main(int argc, char *argv[])
     alarm(0);
     int bytes = 0;
     unsigned short int  name_size = 0; 
-    printf("START OF LOOP RECEIVER\n");
     while ( (  (bytes = read(readfd , &name_size , sizeof(unsigned short int))) > 0) && (name_size != 0) &&(receiver_terminate == 0))
     {   
         fprintf(log,"Read %d bytes(name size: %d)\n",bytes,name_size);
@@ -142,7 +140,7 @@ int main(int argc, char *argv[])
         else
             fprintf(log,"Read %d bytes\n",bytes2);
         
-        printf("FILENAME: %s\n",file_name);
+        //fprintf(log,"FILENAME: %s\n",file_name);
         unsigned int file_size = 0;
         bytes2 = read(readfd, &(file_size), sizeof(unsigned int));
         if (bytes2 < 0)
@@ -187,10 +185,10 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "Error: Failed to create directory %s\n",full_path );
                 return -5;
             }
-            fprintf(log, "Read the directory \"%s\" %d bytes\n", file_name, file_size);
+            fprintf(log, "Read %d bytes the directory \"%s\"\n",file_size ,file_name);
             continue;
         }
-
+        unsigned int temp_file_size = file_size;
         int fd = open(full_path, O_WRONLY | O_CREAT);
         if (fd >= 0)
         {   int read_bytes = 0;
@@ -205,19 +203,20 @@ int main(int argc, char *argv[])
                 write_bytes = write_bytes + w;
             }
 
-            if ( file_size != 0)
+            while( file_size > 0)
             {   
                 int r = read(readfd, buffer, file_size);
                 int w = write(fd, buffer, r);
+                file_size = file_size - r;
 
                 read_bytes = read_bytes + r;
                 write_bytes = write_bytes + w;
             }
 
-            if (read_bytes == write_bytes)
-                fprintf(log, "Read %d bytes (received the whole file \"%s\")\n",read_bytes, file_name);
+            if ((read_bytes == write_bytes) && (read_bytes == temp_file_size))
+                fprintf(log,"Read %d bytes (received the whole file \"%s\")\n",read_bytes, file_name);
             else
-                fprintf(log, "Something went wrong: Read %d bytes write %d bytes\n", read_bytes, write_bytes);
+                fprintf(log,"Something went wrong: Read %d bytes write %d bytes(size:%d)\n",read_bytes, write_bytes,temp_file_size);
         } 
         close(fd);
         free(file_name);

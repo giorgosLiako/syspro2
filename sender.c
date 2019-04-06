@@ -99,7 +99,7 @@ int main(int argc , char* argv[])
         return -4;
     }
     if (bytes != 2)
-        printf("You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
+        fprintf(log,"You should write only 2 bytes here , according to the ptotocol, %d bytes written\n", bytes);
     else
         fprintf(log,"Wrote %d bytes (end)\n",bytes);
     printf("END OF SENDER\n");
