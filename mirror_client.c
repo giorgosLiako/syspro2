@@ -63,14 +63,14 @@ int main(int argc, char *argv[])
 
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, sigquit_handler);
-    signal(SIGUSR2, sigusr2_handler);
+/*    signal(SIGUSR2, sigusr2_handler);
 
     static struct sigaction act;
     act.sa_sigaction = sigusr1_handler;
     act.sa_flags = SA_SIGINFO;
     sigfillset(&(act.sa_mask));
     sigaction(SIGUSR1, &act, NULL);
-
+*/
     int id;
     int buffer_size;
     char *common = NULL;
@@ -226,6 +226,14 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ID file already exist in common directory.\n");
         return -7;
     }
+    FILE *log = fopen(log_file, "a");
+    if (log == NULL)
+    {
+        fprintf(stderr, "Error can not open log_file for writing in sender.c\n");
+        return -5;
+    }
+    fprintf(log,"Log file of client with id %d\n",id);
+    fclose(log);
 
     char id_filename[15];
     sprintf(id_filename,"%d.id",id);
@@ -273,7 +281,7 @@ start_again:
                     fprintf(stderr, "Fail in fork at mirror_client.c .\n");
                     return -11;
                 }
-                else if ((pid2 == 0) && ( user1_signals ==0))
+                else if (pid2 == 0)
                 {
                     execl("sender", "sender", common, id_str, new_id, input, buff_size ,log_file, (char *)NULL);
 
@@ -284,7 +292,7 @@ start_again:
                 {
                     int status1 = 0 , status2 = 0;
 
-                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) &&(user1_signals == 0))
+                    while (((waitpid(pid1, &status1, WNOHANG)) == 0) /*&& (user2_signals == 0) &&(user1_signals == 0)*/)
                         ;
 
                     if (user2_signals == 1)
@@ -302,19 +310,17 @@ start_again:
                         if (retry < 3)
                         {
                             kill(pid2, SIGINT);
-                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
                             goto start_again;
                         }
                         else
                         {
                             kill(pid2, SIGINT);
-                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
                             closedir(common_dir);
                             goto end;
                         }
                     }               
 
-                    while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
+                    while (((waitpid(pid2, &status2, WNOHANG)) == 0) )//&& (user1_signals == 0))
                         ;
 
                     if (user1_signals == 1)
@@ -323,7 +329,6 @@ start_again:
                         retry = retry + 1;
                         if (retry < 3)
                         {
-                            while ((waitpid(pid2, &status2, WNOHANG)) == 0);
                             goto start_again;
                         }
                         else
@@ -433,7 +438,7 @@ start_again2:       for(i = 0; i < event->len ; i++)
                         }
                         else
                         {   int status1 = 0 , status2 = 0 ;
-                            while (((waitpid(pid1, &status1, WNOHANG)) == 0) && (user2_signals == 0) && (user1_signals == 0))
+                            while (((waitpid(pid1, &status1, WNOHANG)) == 0) /*&& (user2_signals == 0) && (user1_signals == 0)*/)
                                 ;
 
                             if (user2_signals == 1)
@@ -461,7 +466,7 @@ start_again2:       for(i = 0; i < event->len ; i++)
                                 }
                             }
 
-                            while (((waitpid(pid2, &status2, WNOHANG)) == 0) && (user1_signals == 0))
+                            while (((waitpid(pid2, &status2, WNOHANG)) == 0) )//&& (user1_signals == 0))
                                 ;
 
                             if (user1_signals == 1)
@@ -475,7 +480,6 @@ start_again2:       for(i = 0; i < event->len ; i++)
                                 }
                                 else
                                 {
-                                   
                                     goto end;
                                 }
                             }
@@ -587,6 +591,14 @@ end: if (user2_signals == 1) printf("Good\n");
         while ((waitpid(pid4, &status, WNOHANG)) == 0)
             ;
     }
+    log = fopen(log_file, "a");
+    if (log == NULL)
+    {
+        fprintf(stderr, "Error can not open log_file for writing in sender.c\n");
+        return -5;
+    }
+    fprintf(log,"Client leaved the system\n");
+    fclose(log);
 
     free(mirror);
     free(input);

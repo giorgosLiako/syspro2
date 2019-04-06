@@ -128,13 +128,12 @@ int main(int argc, char *argv[])
             fprintf(stderr,"Error in malloc at receiver.c\n");
             return -7;
         }
-        
+
         int bytes2 = 0;
         bytes2 = read(readfd , file_name , name_size);
         if (bytes2 < 0)
         {
             fprintf(stderr, "Error in read at receiver.c \n");
-            kill(getppid(), SIGUSR1);
             return -4;
         }
         if (bytes2 != name_size)
@@ -149,7 +148,6 @@ int main(int argc, char *argv[])
         if (bytes2 < 0)
         {
             fprintf(stderr, "Error in read at receiver.c \n");
-            kill(getppid(), SIGUSR1);
             return -1;
         }
         if (bytes2 != 4)
@@ -174,7 +172,6 @@ int main(int argc, char *argv[])
         if (bytes2 < 0)
         {
             fprintf(stderr, "Error in read at receiver.c \n");
-            kill(getppid(), SIGUSR1);
             return -4;
         }
         if (bytes2 != 2)
@@ -218,7 +215,7 @@ int main(int argc, char *argv[])
             }
 
             if (read_bytes == write_bytes)
-                fprintf(log, "Read %d bytes (the whole file \"%s\")\n",read_bytes, file_name);
+                fprintf(log, "Read %d bytes (received the whole file \"%s\")\n",read_bytes, file_name);
             else
                 fprintf(log, "Something went wrong: Read %d bytes write %d bytes\n", read_bytes, write_bytes);
         } 

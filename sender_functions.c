@@ -32,14 +32,9 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
         {
             unsigned short int name_size = 0;
             if (subdir == NULL)
-            {   printf("NAME:   %s\n", dirent_ptr->d_name);
                 name_size = strlen(dirent_ptr->d_name) + 1 ;
-            }
             else
-            {
-                printf("NAME:   %s/%s\n",subdir,dirent_ptr->d_name);
                 name_size = strlen(dirent_ptr->d_name) + strlen(subdir) + 2 ;
-            }
             int bytes = write(writefd, &name_size, sizeof(unsigned short int ));
             if (bytes < 0)
             {
@@ -55,7 +50,10 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
             char *file_name = NULL;
             
             if (subdir == NULL)
+            {
+                printf("NAME:   %s\n", dirent_ptr->d_name);
                 bytes = write(writefd, dirent_ptr->d_name, name_size);
+            }
             else
             {
                 file_name = (char*) malloc( (strlen(subdir)+ strlen(dirent_ptr->d_name)+ 2 ) * sizeof(char));
@@ -67,6 +65,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                 strcpy(file_name,subdir);
                 strcat(file_name,"/");
                 strcat(file_name,dirent_ptr->d_name);
+                printf("NAME:   %s\n", file_name);
                 bytes = write(writefd, file_name, name_size);
                 //free(file_name);
             }
@@ -164,7 +163,7 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                     strcat(new_sub_dirname,"/");
                     strcat(new_sub_dirname,dirent_ptr->d_name);
                 }
-                fprintf(log, "Wrote the directory \"%s\" %d bytes\n", new_sub_dirname, file_size);
+                fprintf(log, "Wrote %d bytes (the directory \"%s\" )\n",file_size, new_sub_dirname);
                 int res = communication_sender_protocol(full_path_name,new_sub_dirname, writefd , buffer , buffer_size,log);
                 free(new_sub_dirname);
                 if (res < 0 )
@@ -205,9 +204,9 @@ int communication_sender_protocol(char *dir_name, char *subdir, int writefd, cha
                 if (write_bytes == read_bytes)
                 {
                     if (subdir == NULL)
-                        fprintf(log, "Wrote %d bytes (the whole file \"%s\") \n", read_bytes, dirent_ptr->d_name);
+                        fprintf(log, "Wrote %d bytes (sent the whole file \"%s\") \n", read_bytes, dirent_ptr->d_name);
                     else
-                        fprintf(log, "Wrote %d bytes (the whole file \"%s\") \n", read_bytes, file_name);
+                        fprintf(log, "Wrote %d bytes (sent the whole file \"%s\") \n", read_bytes, file_name);
                 }
                 else
                 {

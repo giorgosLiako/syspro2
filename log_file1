@@ -1,0 +1,366 @@
+Log file of client with id 1
+Read 2 bytes(name size: 8)
+Read 8 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "fbFmUG2" 0 bytes
+Read 2 bytes(name size: 18)
+Read 18 bytes
+Read 4 bytes (file size: 130000)
+Read 2 bytes (is dir : 0)
+Read 130000 bytes (received the whole file "fbFmUG2/OSwmd3Uf6")
+Read 2 bytes(name size: 7)
+Read 7 bytes
+Read 4 bytes (file size: 168000)
+Read 2 bytes (is dir : 0)
+Read 168000 bytes (received the whole file "zZKyf7")
+Read 2 bytes(name size: 7)
+Read 7 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "h1lKs6" 0 bytes
+Read 2 bytes(name size: 9)
+Read 9 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "h1lKs6/T" 0 bytes
+Read 2 bytes(name size: 16)
+Read 16 bytes
+Read 4 bytes (file size: 236000)
+Read 2 bytes (is dir : 0)
+Read 236000 bytes (received the whole file "h1lKs6/T/DaUkf9")
+Read 2 bytes(name size: 18)
+Read 18 bytes
+Read 4 bytes (file size: 134000)
+Read 2 bytes (is dir : 0)
+Read 134000 bytes (received the whole file "h1lKs6/T/pJZqCXf3")
+Read 2 bytes(name size: 11)
+Read 11 bytes
+Read 4 bytes (file size: 44000)
+Read 2 bytes (is dir : 0)
+Read 44000 bytes (received the whole file "h1lKs6/if8")
+Read 2 bytes(name size: 16)
+Read 16 bytes
+Read 4 bytes (file size: 168000)
+Read 2 bytes (is dir : 0)
+Read 168000 bytes (received the whole file "h1lKs6/uFbdQcf2")
+Read 2 bytes(name size: 10)
+Read 10 bytes
+Read 4 bytes (file size: 214000)
+Read 2 bytes (is dir : 0)
+Read 214000 bytes (received the whole file "oKucFBCf1")
+Read 2 bytes(name size: 7)
+Read 7 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "54c0O1" 0 bytes
+Read 2 bytes(name size: 16)
+Read 16 bytes
+Read 4 bytes (file size: 206000)
+Read 2 bytes (is dir : 0)
+Read 206000 bytes (received the whole file "54c0O1/1ztiWf10")
+Read 2 bytes(name size: 15)
+Read 15 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "54c0O1/NphgXcw" 0 bytes
+Read 2 bytes(name size: 26)
+Read 26 bytes
+Read 4 bytes (file size: 66000)
+Read 2 bytes (is dir : 0)
+Read 66000 bytes (received the whole file "54c0O1/NphgXcw/N7Iedhi5f5")
+Read 2 bytes(name size: 18)
+Read 18 bytes
+Read 4 bytes (file size: 106000)
+Read 2 bytes (is dir : 0)
+Read 106000 bytes (received the whole file "54c0O1/cdvLmLJcf4")
+Read 2 bytes (end)
+Wrote 2 bytes
+Wrote 7 bytes
+Wrote 4 bytes(filesize: 166000)
+Wrote 2 bytes (is dir : 0)
+Wrote 166000 bytes (sent the whole file "KStEf1") 
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 116000)
+Wrote 2 bytes (is dir : 0)
+Wrote 116000 bytes (sent the whole file "cf1") 
+Wrote 2 bytes
+Wrote 6 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "MyJmm" )
+Wrote 2 bytes
+Wrote 14 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "MyJmm/NpwFGj2" )
+Wrote 2 bytes
+Wrote 11 bytes
+Wrote 4 bytes(filesize: 194000)
+Wrote 2 bytes (is dir : 0)
+Wrote 194000 bytes (sent the whole file "3oAVuohgf7") 
+Wrote 2 bytes
+Wrote 5 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "jxmg" )
+Wrote 2 bytes
+Wrote 12 bytes
+Wrote 4 bytes(filesize: 88000)
+Wrote 2 bytes (is dir : 0)
+Wrote 88000 bytes (sent the whole file "jxmg/uOUXf6") 
+Wrote 2 bytes
+Wrote 9 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "z5I8dX9k" )
+Wrote 2 bytes
+Wrote 15 bytes
+Wrote 4 bytes(filesize: 92476)
+Wrote 2 bytes (is dir : 0)
+Wrote 92476 bytes (sent the whole file "z5I8dX9k/pVpf2") 
+Wrote 2 bytes
+Wrote 12 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "z5I8dX9k/CW" )
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wi4" )
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wYU" )
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 208000)
+Wrote 2 bytes (is dir : 0)
+Wrote 208000 bytes (sent the whole file "wYU/Vxzxjf10") 
+Wrote 2 bytes
+Wrote 11 bytes
+Wrote 4 bytes(filesize: 146000)
+Wrote 2 bytes (is dir : 0)
+Wrote 146000 bytes (sent the whole file "wYU/iusFf4") 
+Wrote 2 bytes
+Wrote 7 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wYU/Ad" )
+Wrote 2 bytes
+Wrote 15 bytes
+Wrote 4 bytes(filesize: 200000)
+Wrote 2 bytes (is dir : 0)
+Wrote 200000 bytes (sent the whole file "wYU/Ad/aIr2Wf5") 
+Wrote 2 bytes
+Wrote 2 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "y" )
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "y/Qr3Sm" )
+Wrote 2 bytes
+Wrote 14 bytes
+Wrote 4 bytes(filesize: 82000)
+Wrote 2 bytes (is dir : 0)
+Wrote 82000 bytes (sent the whole file "y/Qr3Sm/S9mf9") 
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 232000)
+Wrote 2 bytes (is dir : 0)
+Wrote 232000 bytes (sent the whole file "y/Qr3Sm/X4f3") 
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 166000)
+Wrote 2 bytes (is dir : 0)
+Wrote 166000 bytes (sent the whole file "y/6e3ZCcdjf2") 
+Wrote 2 bytes
+Wrote 6 bytes
+Wrote 4 bytes(filesize: 72000)
+Wrote 2 bytes (is dir : 0)
+Wrote 72000 bytes (sent the whole file "y/3f8") 
+Wrote 2 bytes (end)
+Read 2 bytes(name size: 8)
+Read 8 bytes
+Read 4 bytes (file size: 34000)
+Read 2 bytes (is dir : 0)
+Read 34000 bytes (received the whole file "TDT87f1")
+Read 2 bytes(name size: 5)
+Read 5 bytes
+Read 4 bytes (file size: 72000)
+Read 2 bytes (is dir : 0)
+Read 72000 bytes (received the whole file "FGf7")
+Read 2 bytes(name size: 3)
+Read 3 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "pe" 0 bytes
+Read 2 bytes(name size: 13)
+Read 13 bytes
+Read 4 bytes (file size: 112000)
+Read 2 bytes (is dir : 0)
+Read 112000 bytes (received the whole file "pe/QFOlFn8f6")
+Read 2 bytes(name size: 6)
+Read 6 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "fNASM" 0 bytes
+Read 2 bytes(name size: 14)
+Read 14 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "fNASM/N14w7AW" 0 bytes
+Read 2 bytes(name size: 22)
+Read 22 bytes
+Read 4 bytes (file size: 178000)
+Read 2 bytes (is dir : 0)
+Read 178000 bytes (received the whole file "fNASM/N14w7AW/qPInef3")
+Read 2 bytes(name size: 17)
+Read 17 bytes
+Read 4 bytes (file size: 170000)
+Read 2 bytes (is dir : 0)
+Read 170000 bytes (received the whole file "fNASM/7soiEV3Of8")
+Read 2 bytes(name size: 15)
+Read 15 bytes
+Read 4 bytes (file size: 72000)
+Read 2 bytes (is dir : 0)
+Read 72000 bytes (received the whole file "fNASM/8F3uytf2")
+Read 2 bytes(name size: 5)
+Read 5 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "K9VW" 0 bytes
+Read 2 bytes(name size: 7)
+Read 7 bytes
+Read 4 bytes (file size: 0)
+Read 2 bytes (is dir : 1)
+Read the directory "K9VW/d" 0 bytes
+Read 2 bytes(name size: 18)
+Read 18 bytes
+Read 4 bytes (file size: 228000)
+Read 2 bytes (is dir : 0)
+Read 228000 bytes (received the whole file "K9VW/d/6ces8yJIf5")
+Read 2 bytes(name size: 14)
+Read 14 bytes
+Read 4 bytes (file size: 8000)
+Read 2 bytes (is dir : 0)
+Read 8000 bytes (received the whole file "K9VW/iAMXSEf4")
+Read 2 bytes (end)
+Wrote 2 bytes
+Wrote 7 bytes
+Wrote 4 bytes(filesize: 166000)
+Wrote 2 bytes (is dir : 0)
+Wrote 166000 bytes (sent the whole file "KStEf1") 
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 116000)
+Wrote 2 bytes (is dir : 0)
+Wrote 116000 bytes (sent the whole file "cf1") 
+Wrote 2 bytes
+Wrote 6 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "MyJmm" )
+Wrote 2 bytes
+Wrote 14 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "MyJmm/NpwFGj2" )
+Wrote 2 bytes
+Wrote 11 bytes
+Wrote 4 bytes(filesize: 194000)
+Wrote 2 bytes (is dir : 0)
+Wrote 194000 bytes (sent the whole file "3oAVuohgf7") 
+Wrote 2 bytes
+Wrote 5 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "jxmg" )
+Wrote 2 bytes
+Wrote 12 bytes
+Wrote 4 bytes(filesize: 88000)
+Wrote 2 bytes (is dir : 0)
+Wrote 88000 bytes (sent the whole file "jxmg/uOUXf6") 
+Wrote 2 bytes
+Wrote 9 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "z5I8dX9k" )
+Wrote 2 bytes
+Wrote 15 bytes
+Wrote 4 bytes(filesize: 92476)
+Wrote 2 bytes (is dir : 0)
+Wrote 92476 bytes (sent the whole file "z5I8dX9k/pVpf2") 
+Wrote 2 bytes
+Wrote 12 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "z5I8dX9k/CW" )
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wi4" )
+Wrote 2 bytes
+Wrote 4 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wYU" )
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 208000)
+Wrote 2 bytes (is dir : 0)
+Wrote 208000 bytes (sent the whole file "wYU/Vxzxjf10") 
+Wrote 2 bytes
+Wrote 11 bytes
+Wrote 4 bytes(filesize: 146000)
+Wrote 2 bytes (is dir : 0)
+Wrote 146000 bytes (sent the whole file "wYU/iusFf4") 
+Wrote 2 bytes
+Wrote 7 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "wYU/Ad" )
+Wrote 2 bytes
+Wrote 15 bytes
+Wrote 4 bytes(filesize: 200000)
+Wrote 2 bytes (is dir : 0)
+Wrote 200000 bytes (sent the whole file "wYU/Ad/aIr2Wf5") 
+Wrote 2 bytes
+Wrote 2 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "y" )
+Wrote 2 bytes
+Wrote 8 bytes
+Wrote 4 bytes(filesize: 0)
+Wrote 2 bytes (is dir : 1)
+Wrote 0 bytes (the directory "y/Qr3Sm" )
+Wrote 2 bytes
+Wrote 14 bytes
+Wrote 4 bytes(filesize: 82000)
+Wrote 2 bytes (is dir : 0)
+Wrote 82000 bytes (sent the whole file "y/Qr3Sm/S9mf9") 
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 232000)
+Wrote 2 bytes (is dir : 0)
+Wrote 232000 bytes (sent the whole file "y/Qr3Sm/X4f3") 
+Wrote 2 bytes
+Wrote 13 bytes
+Wrote 4 bytes(filesize: 166000)
+Wrote 2 bytes (is dir : 0)
+Wrote 166000 bytes (sent the whole file "y/6e3ZCcdjf2") 
+Wrote 2 bytes
+Wrote 6 bytes
+Wrote 4 bytes(filesize: 72000)
+Wrote 2 bytes (is dir : 0)
+Wrote 72000 bytes (sent the whole file "y/3f8") 
+Wrote 2 bytes (end)
+Client leaved the system

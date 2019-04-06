@@ -122,9 +122,10 @@ do
         size="$(( $size * 1000))"
         touch $file
         ran="$(($RANDOM % 62))"
+        char="${set[ran]}"
         for((j=0 ; j<"$size" ; j++))
         do
-            echo "${set[ran]}" >> $file
+            echo "$char"  >> $file
         done
     fi
     let steps=steps+1
