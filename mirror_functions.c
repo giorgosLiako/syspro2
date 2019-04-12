@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/*create the id file in common dir*/
 int produce_id_file_to_common_dir(char* path , int id )
 {
     char id_str[16];
@@ -19,13 +20,13 @@ int produce_id_file_to_common_dir(char* path , int id )
         return -2;
     }
 
-    strcpy(id_file,path);
+    strcpy(id_file,path);/*make the path*/
     strcat(id_file,"/");
     strcat(id_file,id_str);
 
     int fd ;
     if ( (fd = open(id_file, O_WRONLY, 0777)) == -1)
-    {
+    {	/*create the file in common dir*/
         if ( (fd = open(id_file, O_WRONLY | O_CREAT , 0777)) == -1)
         {
             fprintf(stderr,"Error in file id creation.\n");
@@ -35,17 +36,17 @@ int produce_id_file_to_common_dir(char* path , int id )
         pid_t pid = getpid();
 
         char buf[16];
-        sprintf(buf , "%d",pid);
+        sprintf(buf , "%d",pid);/*write in the file the pid of the proccess*/
 
         write(fd,buf, strlen(buf) );
     }
     else
-    {   
+    {   /*the file id already exists so return error*/
         free(id_file);
         return -1;
     }
     
     close(fd);
-    free(id_file);
+    free(id_file);/*free resources and return*/
     return 0 ;
 }
